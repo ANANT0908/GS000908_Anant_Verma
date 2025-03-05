@@ -25,9 +25,8 @@ const chartData = [
 
 const ChartPage= () => {
   return (
-    <div style={{ width: '100%', height: 500, backgroundColor: '#333', padding: 20 }}>
+    <div style={{ width: '100%', height: 500, padding: 20 }}>
       <div style={{ marginBottom: 16 }}>
-        <label style={{ color: '#fff', marginRight: 8 }}>San Francisco Bay Trends</label>
         <select style={{ padding: 6 }}>
           <option>San Francisco Bay Trends</option>
           <option>Atlanta Outfitters</option>
