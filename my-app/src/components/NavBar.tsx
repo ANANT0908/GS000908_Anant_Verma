@@ -9,8 +9,8 @@ const NavBar: React.FC = () => {
           alt="GSynergy Logo"
           style={{ marginRight: 8 }}
         />
-        <h1>Data Viewer App</h1>
       </div>
+        <h1>Data Viewer App</h1>
       <div className="auth-section">
         <button>Sign In</button>
       </div>
