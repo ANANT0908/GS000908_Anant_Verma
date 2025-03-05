@@ -1,11 +1,9 @@
-/* CSS Reset */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
   }
   
-  /* Global Styles */
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
@@ -13,14 +11,13 @@
     color: #333;
   }
   
-  /* App Container */
   .app-container {
     display: flex;
     flex-direction: column;
     height: 100vh;
   }
   
-  /* Navbar */
+  
   .navbar {
     display: flex;
     justify-content: space-between;
@@ -59,14 +56,14 @@
     background-color: #115293;
   }
   
-  /* Main Layout */
+  
   .main-layout {
     flex: 1;
     display: flex;
     overflow: hidden;
   }
   
-  /* Side Menu */
+  
   .side-menu {
     width: 220px;
     background: #2c3e50;
@@ -96,7 +93,7 @@
     background-color: #34495e;
   }
   
-  /* Page Content */
+  
   .page-content {
     flex: 1;
     padding: 1.5rem;
@@ -104,7 +101,7 @@
     background-color: #ecf0f1;
   }
   
-  /* Tables */
+
   table {
     width: 100%;
     border-collapse: collapse;
@@ -124,7 +121,7 @@
     font-weight: 600;
   }
   
-  /* Form Elements */
+  
   input[type="text"],
   input[type="number"],
   select {
@@ -144,7 +141,7 @@
     border-color: #1976d2;
   }
   
-  /* Buttons */
+  
   button {
     background-color: #1976d2;
     color: #fff;
@@ -165,12 +162,12 @@
     cursor: not-allowed;
   }
   
-  /* AG-Grid Overrides */
+
   .ag-theme-alpine {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
   
-  /* Responsive Adjustments */
+  
   @media (max-width: 1080px) {
     .side-menu {
       width: 180px;

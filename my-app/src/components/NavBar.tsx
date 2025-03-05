@@ -12,7 +12,6 @@ const NavBar: React.FC = () => {
         <h1>Data Viewer App</h1>
       </div>
       <div className="auth-section">
-        {/* Placeholder for sign-in/out logic */}
         <button>Sign In</button>
       </div>
     </header>

@@ -30,7 +30,6 @@ const storeSlice = createSlice({
       state.stores = state.stores.filter((s: { id: number; }) => s.id !== action.payload);
     },
     reorderStoreUp(state, action: PayloadAction<number>) {
-      // Move store up in array if possible
       const index = state.stores.findIndex((s: { id: number; }) => s.id === action.payload);
       if (index > 0) {
         const temp = state.stores[index];
@@ -39,7 +38,6 @@ const storeSlice = createSlice({
       }
     },
     reorderStoreDown(state, action: PayloadAction<number>) {
-      // Move store down in array if possible
       const index = state.stores.findIndex((s: { id: number; }) => s.id === action.payload);
       if (index >= 0 && index < state.stores.length - 1) {
         const temp = state.stores[index];

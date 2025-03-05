@@ -26,7 +26,6 @@ const planningSlice = createSlice({
       state.salesUnits[key] = units;
     },
     importSampleData(state, action: PayloadAction<PlanningData>) {
-      // Overwrite or merge with existing
       state.salesUnits = { ...state.salesUnits, ...action.payload };
     },
   },

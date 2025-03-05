@@ -26,8 +26,6 @@ const ChartPage: React.FC = () => {
     stores.length > 0 ? stores[0].id : 0
   );
 
-  // Build chart data for the selected store:
-  //  For each week, sum up GM Dollars across all SKUs, sum up Sales Dollars, compute GM%
   const chartData = useMemo(() => {
     if (!selectedStoreId) return [];
     return WEEKS.map((week) => {

@@ -7,7 +7,7 @@ import { Store } from '../data/sampleData';
 import { SKU } from '../data/sampleData';
 import { useAppDispatch, useAppSelector } from '../utils/hooks';
 
-const WEEKS = ['W01', 'W02']; // add more as needed
+const WEEKS = ['W01', 'W02']; 
 
 const PlanningPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -15,10 +15,10 @@ const PlanningPage: React.FC = () => {
   const skus = useAppSelector((state:any) => state.skus.skus);
   const planningData = useAppSelector((state:any) => state.planning.salesUnits);
 
-  // Create row data by cross-joining stores × SKUs
+ 
   const rowData = useMemo(() => {
     const rows: Array<{
-      id: string; // unique row ID
+      id: string; 
       store: Store;
       sku: SKU;
     }> = [];
@@ -34,9 +34,7 @@ const PlanningPage: React.FC = () => {
     return rows;
   }, [stores, skus]);
 
-  // Column definitions
   const columnDefs:any = useMemo(() => {
-    // Some base columns
     const baseCols = [
       {
         headerName: 'Store',
@@ -52,11 +50,6 @@ const PlanningPage: React.FC = () => {
       },
     ];
 
-    // For each week, we have 4 columns:
-    //  1) Sales Units (editable)
-    //  2) Sales Dollars (computed)
-    //  3) GM Dollars (computed)
-    //  4) GM Percent (computed + conditional background)
     const weekCols = WEEKS.map((week) => {
       return [
         {
@@ -80,7 +73,7 @@ const PlanningPage: React.FC = () => {
                 units: newVal,
               })
             );
-            return true; // allow AG-Grid to set
+            return true;
           },
         },
         {
@@ -129,9 +122,9 @@ const PlanningPage: React.FC = () => {
           cellStyle: (params: any) => {
             const val = params.value || 0;
             if (val >= 40) {
-              return { backgroundColor: '#8BC34A', color: '#000' }; // Green
+              return { backgroundColor: '#8BC34A', color: '#000' }; 
             } else if (val >= 10) {
-              return { backgroundColor: '#FFEB3B', color: '#000' }; // Yellow
+              return { backgroundColor: '#FFEB3B', color: '#000' }; 
             } else if (val > 5) {
               return { backgroundColor: 'orange', color: '#000' };
             } else {
