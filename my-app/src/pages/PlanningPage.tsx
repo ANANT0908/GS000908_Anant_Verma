@@ -1,13 +1,19 @@
 import React, { useState, useMemo } from "react";
 import { AgGridReact } from "ag-grid-react";
-import { ColDef, ModuleRegistry } from "ag-grid-community";
+import { ColDef, ModuleRegistry, ValueParserParams } from "ag-grid-community";
 import { ClientSideRowModelModule } from "ag-grid-community";
 
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
-
+interface Store {
+  id: number;
+  name: string;
+  city: string;
+  state: string;
+  
+}
 const PlanningPage: React.FC = () => {
   const [rowData, setRowData] = useState([
     { store: "NY Fashion Hub", sku: "Classic Leather Jacket", price: 120, cost: 50, week1SalesUnits: 100, week2SalesUnits: 50 },
@@ -30,10 +36,10 @@ const PlanningPage: React.FC = () => {
     return { salesDollars, gmDollars, gmPercent };
   };
 
-  const getGMColor = (gmPercent: number) => {
-    if (gmPercent >= 40) return "#4CAF50"; 
-    if (gmPercent >= 10) return "#FFEB3B"; 
-    if (gmPercent >= 5) return "#FF9800"; 
+  const getGMColor = (gmPercent: string) => {
+    if (gmPercent >= "40") return "#4CAF50"; 
+    if (gmPercent >= "10") return "#FFEB3B"; 
+    if (gmPercent >= "5") return "#FF9800"; 
     return "#F44336"; 
   };
 
@@ -51,28 +57,22 @@ const PlanningPage: React.FC = () => {
               headerName: "Sales Units",
               editable: true,
               width: 100,
-              valueParser: (params: any) => Number(params.newValue) || 0,
+              valueParser: (params: ValueParserParams<Store>) => Number(params.newValue) || 0,
             },
             {
               headerName: "Sales Dollars",
               width: 120,
-              valueGetter: (params: any) => "$" + calculateValues(params, "week1SalesUnits").salesDollars.toFixed(2),
+              valueGetter: (params: ValueParserParams<Store>) => "$" + calculateValues(params, "week1SalesUnits").salesDollars.toFixed(2),
             },
             {
               headerName: "GM Dollars",
               width: 120,
-              valueGetter: (params: any) => "$" + calculateValues(params, "week1SalesUnits").gmDollars.toFixed(2),
+              valueGetter: (params: ValueParserParams<Store>) => "$" + calculateValues(params, "week1SalesUnits").gmDollars.toFixed(2),
             },
             {
               headerName: "GM Percent",
               width: 120,
-              valueGetter: (params: any) => calculateValues(params, "week1SalesUnits").gmPercent.toFixed(2) + " %",
-              cellStyle: (params: any) => ({
-                backgroundColor: getGMColor(parseFloat(params.value)),
-                color: "black",
-                fontWeight: "bold",
-                textAlign: "center",
-              }),
+              valueGetter: (params: ValueParserParams<Store>) => calculateValues(params, "week1SalesUnits").gmPercent.toFixed(2) + " %",
             },
           ],
         },
@@ -84,28 +84,22 @@ const PlanningPage: React.FC = () => {
               headerName: "Sales Units",
               editable: true,
               width: 100,
-              valueParser: (params) => Number(params.newValue) || 0,
+              valueParser: (params:ValueParserParams<Store>) => Number(params.newValue) || 0,
             },
             {
               headerName: "Sales Dollars",
               width: 120,
-              valueGetter: (params) => "$" + calculateValues(params, "week2SalesUnits").salesDollars.toFixed(2),
+              valueGetter: (params:ValueParserParams<Store>) => "$" + calculateValues(params, "week2SalesUnits").salesDollars.toFixed(2),
             },
             {
               headerName: "GM Dollars",
               width: 120,
-              valueGetter: (params) => "$" + calculateValues(params, "week2SalesUnits").gmDollars.toFixed(2),
+              valueGetter: (params:ValueParserParams<Store>) => "$" + calculateValues(params, "week2SalesUnits").gmDollars.toFixed(2),
             },
             {
               headerName: "GM Percent",
               width: 120,
-              valueGetter: (params) => calculateValues(params, "week2SalesUnits").gmPercent.toFixed(2) + " %",
-              cellStyle: (params) => ({
-                backgroundColor: getGMColor(parseFloat(params.value)),
-                color: "black",
-                fontWeight: "bold",
-                textAlign: "center",
-              }),
+              valueGetter: (params:ValueParserParams<Store>) => calculateValues(params, "week2SalesUnits").gmPercent.toFixed(2) + " %",
             },
           ],
         },

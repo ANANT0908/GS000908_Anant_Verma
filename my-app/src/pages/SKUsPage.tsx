@@ -78,7 +78,7 @@ export default function SKUsPage() {
         headerName: "",
         field: "actions",
         width: 120,
-        cellRenderer: (params: any) => (
+        cellRenderer: (params: { data: SKU }) => (
           <>
             <IconButton size="small" onClick={() => handleOpenDialog(params.data)}>
               <Edit />

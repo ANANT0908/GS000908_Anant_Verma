@@ -72,7 +72,7 @@ export default function StoresPage() {
         headerName: "",
         field: "actions",
         width: 120,
-        cellRenderer: (params: any) => (
+        cellRenderer: (params: { data: Store }) => (
           <>
             <IconButton size="small" onClick={() => handleOpenDialog(params.data)}>
               <Edit />
