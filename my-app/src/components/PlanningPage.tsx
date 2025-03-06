@@ -19,12 +19,7 @@ const PlanningPage: React.FC = () => {
     { store: "Vegas Trends", sku: "Party Blazer", price: 80, cost: 60, week1SalesUnits: 90, week2SalesUnits: 60 },
     { store: "Denver Outdoors", sku: "Hiking Boots", price: 150, cost: 120, week1SalesUnits: 40, week2SalesUnits: 70 },
     { store: "NY Fashion Hub", sku: "Classic Leather Jacket", price: 120, cost: 50, week1SalesUnits: 100, week2SalesUnits: 50 },
-    { store: "LA Streetwear", sku: "Graphic T-Shirt", price: 30, cost: 20, week1SalesUnits: 80, week2SalesUnits: 120 },
-    { store: "Texas Casuals", sku: "Denim Jeans", price: 70, cost: 40, week1SalesUnits: 60, week2SalesUnits: 90 },
-    { store: "Chicago Charm Boutique", sku: "Floral Dress", price: 150, cost: 40, week1SalesUnits: 200, week2SalesUnits: 220 },
-    { store: "Miami Beachwear", sku: "Summer Shorts", price: 35, cost: 30, week1SalesUnits: 50, week2SalesUnits: 100 },
-    { store: "Seattle Outfits", sku: "Winter Coat", price: 200, cost: 100, week1SalesUnits: 10, week2SalesUnits: 30 },
-    { store: "Vegas Trends", sku: "Party Blazer", price: 80, cost: 60, week1SalesUnits: 90, week2SalesUnits: 60 },
+  
   ]);
 
   const calculateValues = (params: any, type: string) => {
@@ -43,8 +38,8 @@ const PlanningPage: React.FC = () => {
   };
 
   const columnDefs: ColDef[] = useMemo(() => [
-    { field: "store", headerName: "Store", pinned: "left", width: 200 },
-    { field: "sku", headerName: "SKU", pinned: "left", width: 200 },
+    { field: "store", headerName: "Store", pinned: "left", width: 170 },
+    { field: "sku", headerName: "SKU", pinned: "left", width: 175 },
     {
       headerName: "February",
       children: [
@@ -70,7 +65,7 @@ const PlanningPage: React.FC = () => {
             },
             {
               headerName: "GM Percent",
-              width: 100,
+              width: 120,
               valueGetter: (params: any) => calculateValues(params, "week1SalesUnits").gmPercent.toFixed(2) + " %",
               cellStyle: (params: any) => ({
                 backgroundColor: getGMColor(parseFloat(params.value)),
@@ -103,7 +98,7 @@ const PlanningPage: React.FC = () => {
             },
             {
               headerName: "GM Percent",
-              width: 100,
+              width: 120,
               valueGetter: (params) => calculateValues(params, "week2SalesUnits").gmPercent.toFixed(2) + " %",
               cellStyle: (params) => ({
                 backgroundColor: getGMColor(parseFloat(params.value)),
@@ -120,8 +115,7 @@ const PlanningPage: React.FC = () => {
 
   return (
     <div>
-      <h2 style={{ textAlign: "center", margin: "16px 0" }}>Data Viewer App</h2>
-      <div className="ag-theme-alpine" style={{ height: "500px", width: "100%", margin: "0 auto" }}>
+      <div className="ag-theme-alpine" style={{ height: "570px", width: "100%", margin: "0 auto" }}>
         <AgGridReact 
           rowData={rowData} 
           columnDefs={columnDefs} 
