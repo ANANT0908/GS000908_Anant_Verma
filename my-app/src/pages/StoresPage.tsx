@@ -1,38 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  IconButton,
-  Box,
   Button,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   TextField,
+  IconButton,
 } from "@mui/material";
-import { Delete } from "@mui/icons-material";
-import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
-import {
-  DndContext,
-  useSensor,
-  useSensors,
-  PointerSensor,
-  DragEndEvent,
-  closestCenter,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  verticalListSortingStrategy,
-  useSortable,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import { Delete, Edit } from "@mui/icons-material";
+import { AgGridReact } from "ag-grid-react";
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-alpine.css";
+import { useAppDispatch, useAppSelector } from "../utils/hooks";
+import { addStore, deleteStore, updateStore } from "../store/slices/storeSlice";
 
 interface Store {
   id: number;
@@ -41,201 +22,159 @@ interface Store {
   state: string;
 }
 
-const initialStores: Store[] = [
-  { id: 1, name: "Atlanta Outfitters", city: "Atlanta", state: "GA" },
-  { id: 2, name: "Chicago Charm Boutique", city: "Chicago", state: "IL" },
-  { id: 3, name: "Houston Harvest Market", city: "Houston", state: "TX" },
-  { id: 4, name: "Seattle Skyline Goods", city: "Seattle", state: "WA" },
-  { id: 5, name: "Miami Breeze Apparel", city: "Miami", state: "FL" },
-];
-
 export default function StoresPage() {
-  const [stores, setStores] = useState<Store[]>(initialStores);
-
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 5,
-      },
-    })
-  );
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
-
-    setStores((prev) => {
-      const oldIndex = prev.findIndex((item) => item.id === Number(active.id));
-      const newIndex = prev.findIndex((item) => item.id === Number(over.id));
-      return arrayMove(prev, oldIndex, newIndex);
-    });
-  };
-
-  const handleDelete = (id: number) => {
-    setStores((prev) => prev.filter((store) => store.id !== id));
-  };
+  const dispatch = useAppDispatch();
+  const stores = useAppSelector((state) => state.stores.stores);
 
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [storeName, setStoreName] = useState("");
-  const [storeCity, setStoreCity] = useState("");
-  const [storeState, setStoreState] = useState("");
+  const [editMode, setEditMode] = useState(false);
+  const [selectedStore, setSelectedStore] = useState<Store | null>(null);
+  const [storeData, setStoreData] = useState({ name: "", city: "", state: "" });
 
-  const handleOpenDialog = () => {
+  const handleDelete = (id: number) => dispatch(deleteStore(id));
+
+  const handleOpenDialog = (store?: Store) => {
+    if (store) {
+      setEditMode(true);
+      setSelectedStore(store);
+      setStoreData({
+        name: store.name,
+        city: store.city,
+        state: store.state,
+      });
+    } else {
+      setEditMode(false);
+      setStoreData({ name: "", city: "", state: "" });
+    }
     setDialogOpen(true);
   };
+
   const handleCloseDialog = () => {
     setDialogOpen(false);
-    setStoreName("");
-    setStoreCity("");
-    setStoreState("");
+    setSelectedStore(null);
   };
 
-  const handleAddStore = () => {
-    if (!storeName.trim()) return;
-    const newId =
-      stores.length > 0 ? Math.max(...stores.map((s) => s.id)) + 1 : 1;
-    const newStore: Store = {
-      id: newId,
-      name: storeName.trim(),
-      city: storeCity.trim(),
-      state: storeState.trim(),
-    };
-    setStores([...stores, newStore]);
+  const handleSaveStore = () => {
+    if (!storeData.name.trim()) return;
+
+    if (editMode && selectedStore) {
+      dispatch(updateStore({ id: selectedStore.id, ...storeData }));
+    } else {
+      dispatch(addStore(storeData));
+    }
+
     handleCloseDialog();
   };
 
+  const columnDefs: any[] = useMemo(
+    () => [
+      {
+        headerName: "",
+        field: "actions",
+        width: 120,
+        cellRenderer: (params: any) => (
+          <>
+            <IconButton size="small" onClick={() => handleOpenDialog(params.data)}>
+              <Edit />
+            </IconButton>
+            <IconButton size="small" onClick={() => handleDelete(params.data.id)}>
+              <Delete />
+            </IconButton>
+          </>
+        ),
+        sortable: false,
+        filter: false,
+        cellStyle: { textAlign: "center" },
+      },
+      {
+        field: "name",
+        headerName: "Store Name",
+        flex: 1,
+        cellStyle: { paddingLeft: "12px", fontWeight: "500" },
+      },
+      {
+        field: "city",
+        headerName: "City",
+        flex: 1,
+        cellStyle: { textAlign: "center" },
+      },
+      {
+        field: "state",
+        headerName: "State",
+        flex: 1,
+        cellStyle: { textAlign: "center" },
+      },
+    ],
+    [stores]
+  );
+
   return (
-    <Box sx={{ position: "relative", p: 2 }}>
-      <h2 style={{ margin: "16px 0" }}>Store</h2>
-
-      <TableContainer component={Paper} sx={{ backgroundColor: "#fff" }}>
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={stores.map((s) => s.id.toString())}
-            strategy={verticalListSortingStrategy}
-          >
-            <Table sx={{ minWidth: 650 }}>
-              <TableHead>
-                <TableRow sx={{ backgroundColor: "#f5f7f8" }}>
-                  <TableCell sx={{ width: 50 }}>Delete</TableCell>
-                  <TableCell sx={{ width: 80 }}>S.No / Drag</TableCell>
-                  <TableCell>Store</TableCell>
-                  <TableCell>City</TableCell>
-                  <TableCell>State</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {stores.map((store, index) => (
-                  <SortableRow
-                    key={store.id}
-                    store={store}
-                    index={index}
-                    onDelete={handleDelete}
-                  />
-                ))}
-              </TableBody>
-            </Table>
-          </SortableContext>
-        </DndContext>
-      </TableContainer>
-
+    <>
+      <div className="ag-theme-alpine" style={{ height: 500, width: "100%", marginBottom: "12px" }}>
+        <AgGridReact
+          rowData={stores}
+          columnDefs={columnDefs}
+          defaultColDef={{ resizable: true, sortable: true, filter: true }}
+          rowHeight={55}
+          headerHeight={60}
+          className="custom-ag-grid"
+        />
+      </div>
       <Button
         variant="contained"
-        onClick={handleOpenDialog}
+        onClick={() => handleOpenDialog()}
         sx={{
-          position: "fixed",
-          bottom: 24,
-          left: 240,
+          marginBottom: 2,
           backgroundColor: "#f3905f",
-          ":hover": {
-            backgroundColor: "#f16529",
-          },
+          ":hover": { backgroundColor: "#f16529" },
+          fontWeight: "bold",
+          borderRadius: "8px",
+          padding: "10px 20px",
         }}
       >
-        NEW STORE
+        ADD STORE
       </Button>
 
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>Add New Store</DialogTitle>
-        <DialogContent
-          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
-        >
+        <DialogTitle sx={{ textAlign: "center", fontWeight: "bold", fontSize: "1.5rem" }}>
+          {editMode ? "Update Store" : "Add New Store"}
+        </DialogTitle>
+        <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, p: 3 }}>
           <TextField
             placeholder="Store Name"
-            value={storeName}
-            onChange={(e) => setStoreName(e.target.value)}
+            value={storeData.name}
+            onChange={(e) => setStoreData({ ...storeData, name: e.target.value })}
           />
           <TextField
             placeholder="City"
-            value={storeCity}
-            onChange={(e) => setStoreCity(e.target.value)}
+            value={storeData.city}
+            onChange={(e) => setStoreData({ ...storeData, city: e.target.value })}
           />
           <TextField
             placeholder="State"
-            value={storeState}
-            onChange={(e) => setStoreState(e.target.value)}
+            value={storeData.state}
+            onChange={(e) => setStoreData({ ...storeData, state: e.target.value })}
           />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button variant="contained" onClick={handleAddStore}>
-            Add
+        <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
+          <Button onClick={handleCloseDialog} sx={{ color: "gray", fontWeight: "500" }}>
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleSaveStore}
+            sx={{
+              backgroundColor: "#4CAF50",
+              ":hover": { backgroundColor: "#388E3C" },
+              fontWeight: "bold",
+              borderRadius: "8px",
+              padding: "8px 16px",
+            }}
+          >
+            {editMode ? "Update Store" : "Add Store"}
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
-  );
-}
-
-interface SortableRowProps {
-  store: Store;
-  index: number;
-  onDelete: (id: number) => void;
-}
-
-function SortableRow({ store, index, onDelete }: SortableRowProps) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: store.id.toString() });
-
-  const style = {
-    transform: CSS.Translate.toString(transform),
-    transition,
-    backgroundColor: isDragging ? "#fafafa" : "inherit",
-  };
-
-  return (
-    <TableRow ref={setNodeRef} style={style}>
-      <TableCell>
-        <IconButton size="small" onClick={() => onDelete(store.id)}>
-          <Delete />
-        </IconButton>
-      </TableCell>
-      <TableCell>
-        <div style={{display:'flex', alignItems:'center', justifyContent:'space-evenly'}}>
-        <IconButton
-          size="small"
-          sx={{ cursor: "grab", ml: 1 }}
-          {...attributes}
-          {...listeners}
-        >
-          <DragIndicatorIcon />
-        </IconButton>
-        <div>{index + 1}</div>
-        </div>
-      </TableCell>
-      <TableCell>{store.name}</TableCell>
-      <TableCell>{store.city}</TableCell>
-      <TableCell>{store.state}</TableCell>
-    </TableRow>
+    </>
   );
 }
