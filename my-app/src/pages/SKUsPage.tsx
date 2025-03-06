@@ -1,22 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  IconButton,
   Box,
+  Paper,
   Button,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   TextField,
+  IconButton,
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
+import { AgGridReact } from "ag-grid-react";
+import { ColDef } from "ag-grid-community";
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-alpine.css";
+import { useAppDispatch, useAppSelector } from "../utils/hooks";
+import { addSKU, deleteSKU } from "../store/slices/skuSlice";
 
 interface SKU {
   id: number;
@@ -25,24 +25,16 @@ interface SKU {
   cost: number;
 }
 
-const initialSKUs: SKU[] = [
-  { id: 1, name: "Product A", price: 100, cost: 70 },
-  { id: 2, name: "Product B", price: 150, cost: 90 },
-  { id: 3, name: "Product C", price: 200, cost: 120 },
-  { id: 4, name: "Product D", price: 300, cost: 120 },
-  { id: 5, name: "Product E", price: 400, cost: 120 },
-];
-
 export default function SKUsPage() {
-  const [skus, setSKUs] = useState<SKU[]>(initialSKUs);
+  const dispatch = useAppDispatch();
+  const skus = useAppSelector((state) => state.skus.skus);
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const [newSKU, setNewSKU] = useState({ name: "", price: "", cost: "" });
 
   const handleDelete = (id: number) => {
-    setSKUs((prev) => prev.filter((sku) => sku.id !== id));
+    dispatch(deleteSKU(id));
   };
-
-
 
   const handleOpenDialog = () => setDialogOpen(true);
   const handleCloseDialog = () => {
@@ -52,90 +44,150 @@ export default function SKUsPage() {
 
   const handleAddSKU = () => {
     if (!newSKU.name.trim()) return;
-    const newId = skus.length > 0 ? Math.max(...skus.map((s) => s.id)) + 1 : 1;
-    const sku: SKU = {
-      id: newId,
+    const skuData = {
       name: newSKU.name.trim(),
       price: parseFloat(newSKU.price) || 0,
       cost: parseFloat(newSKU.cost) || 0,
     };
-    setSKUs([...skus, sku]);
+    dispatch(addSKU(skuData));
     handleCloseDialog();
   };
 
-  return (
-    <Box sx={{ position: "relative", p: 2 }}>
-      <h2 style={{ margin: "16px 0" }}>SKU Management</h2>
+  const columnDefs: any[] = useMemo(
+    () => [
+      {
+        headerName: "",
+        field: "delete",
+        width: 80,
+        cellRenderer: (params: any) => (
+          <IconButton size="small" onClick={() => handleDelete(params.data.id)}>
+            <Delete />
+          </IconButton>
+        ),
+        sortable: false,
+        filter: false,
+        cellStyle: { textAlign: "center" },
+      },
+      {
+        field: "name",
+        headerName: "SKU Name",
+        flex: 1,
+        cellStyle: { paddingLeft: "12px", fontWeight: "500" },
+      },
+      {
+        field: "price",
+        headerName: "Price ($)",
+        flex: 1,
+        valueFormatter: (params: any): string => `$ ${params.value.toFixed(2)}`,
+        cellStyle: { textAlign: "right", paddingRight: "10px" },
+      },
+      {
+        field: "cost",
+        headerName: "Cost ($)",
+        flex: 1,
+        valueFormatter: (params: any): string => `$ ${params.value.toFixed(2)}`,
+        cellStyle: { textAlign: "right", paddingRight: "10px" },
+      },
+    ],
+    [skus]
+  );
 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow sx={{ backgroundColor: "#f5f7f8" }}>
-              <TableCell sx={{ width: 50 }}>Delete</TableCell>
-              <TableCell>SKU</TableCell>
-              <TableCell>Price</TableCell>
-              <TableCell>Cost</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {skus.map((sku, index) => (
-              <TableRow key={sku.id}>
-                <TableCell>
-                  <IconButton size="small" onClick={() => handleDelete(sku.id)}>
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-                <TableCell>{sku.name}</TableCell>
-                <TableCell>{sku.price}</TableCell>
-                <TableCell>{sku.cost}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+  return (
+    <>
+      <div className="ag-theme-alpine" style={{ height: 450, width: "100%" }}>
+        <AgGridReact
+          rowData={skus}
+          columnDefs={columnDefs}
+          defaultColDef={{ resizable: true, sortable: true, filter: true }}
+          rowHeight={55}
+        />
+      </div>
 
       <Button
         variant="contained"
         onClick={handleOpenDialog}
         sx={{
           position: "fixed",
-          bottom: 24,
-          left: 240,
+          bottom: 20,
+          left: "50%",
+          transform: "translateX(-50%)",
           backgroundColor: "#f3905f",
           ":hover": { backgroundColor: "#f16529" },
+          fontWeight: "bold",
+          borderRadius: "8px",
+          boxShadow: "0px 6px 14px rgba(0,0,0,0.15)",
+          padding: "12px 24px",
         }}
       >
         ADD SKU
       </Button>
 
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>Add New SKU</DialogTitle>
-        <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <DialogTitle
+          sx={{
+            textAlign: "center",
+            fontWeight: "bold",
+            fontSize: "1.5rem",
+            color: "#333",
+          }}
+        >
+          Add New SKU
+        </DialogTitle>
+        <DialogContent
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            p: 3,
+            minWidth: 350,
+          }}
+        >
           <TextField
-            placeholder="SKU Name"
+            label="SKU Name"
             value={newSKU.name}
             onChange={(e) => setNewSKU({ ...newSKU, name: e.target.value })}
+            fullWidth
+            sx={{ backgroundColor: "#f9f9f9", borderRadius: 1 }}
           />
           <TextField
-            placeholder="Price"
+            label="Price ($)"
             type="number"
             value={newSKU.price}
             onChange={(e) => setNewSKU({ ...newSKU, price: e.target.value })}
+            fullWidth
+            sx={{ backgroundColor: "#f9f9f9", borderRadius: 1 }}
           />
           <TextField
-            placeholder="Cost"
+            label="Cost ($)"
             type="number"
             value={newSKU.cost}
             onChange={(e) => setNewSKU({ ...newSKU, cost: e.target.value })}
+            fullWidth
+            sx={{ backgroundColor: "#f9f9f9", borderRadius: 1 }}
           />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button variant="contained" onClick={handleAddSKU}>
-            Add
+        <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
+          <Button
+            onClick={handleCloseDialog}
+            sx={{ color: "gray", fontWeight: "500" }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleAddSKU}
+            sx={{
+              backgroundColor: "#4CAF50",
+              ":hover": { backgroundColor: "#388E3C" },
+              fontWeight: "bold",
+              borderRadius: "8px",
+              padding: "8px 16px",
+            }}
+          >
+            Add SKU
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </>
   );
 }
