@@ -1,120 +1,89 @@
-import React, { useState, useMemo, useEffect, useCallback } from "react";
-import { AgGridReact } from "ag-grid-react";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css";
-import { setSalesUnits } from "../store/slices/planningSlice";
-import { Store } from "../data/sampleData";
-import { SKU } from "../data/sampleData";
-import { useAppDispatch, useAppSelector } from "../utils/hooks";
+import React from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@mui/material";
+import { styled } from "@mui/system";
 
-const WEEKS = ["W01", "W02"];
+const data = [
+  {
+    store: "Nashville Melody Music Store",
+    sku: "Rugged Utility Jacket",
+    week1: { salesUnits: 200, salesDollars: 8998, gmDollars: 8512, gmPercent: 94.6 },
+    week2: { salesUnits: 0, salesDollars: 0, gmDollars: 8512, gmPercent: 94.6 },
+  },
+  {
+    store: "Chicago Charm Boutique",
+    sku: "Floral Chiffon Wrap Dress",
+    week1: { salesUnits: 200, salesDollars: 29998, gmDollars: 27689, gmPercent: 54.3 },
+    week2: { salesUnits: 0, salesDollars: 0, gmDollars: 27689, gmPercent: 54.3 },
+  },
+];
 
-const PlanningPage: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const stores = useAppSelector((state: any) => state.stores.stores);
-  const skus = useAppSelector((state: any) => state.skus.skus);
-  const planningData = useAppSelector((state: any) => state.planning.salesUnits);
+const getColor = (percent:any) => {
+  if (percent >= 50) return "#4CAF50"; // Green
+  if (percent >= 30) return "#FF9800"; // Orange
+  return "#F44336"; // Red
+};
 
-  const [rowData, setRowData] = useState<any[]>([]);
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  textAlign: "center",
+  fontWeight: "bold",
+}));
 
-  useEffect(() => {
-    const rows: Array<{ id: string; store: Store; sku: SKU }> = [];
-    stores.forEach((store: any) => {
-      skus.forEach((sku: any) => {
-        rows.push({
-          id: `${store.id}_${sku.id}`,
-          store,
-          sku,
-          ...WEEKS.reduce((acc, week) => {
-            acc[`${week}_units`] = planningData[`${store.id}_${sku.id}_${week}`] || 0;
-            return acc;
-          }, {} as Record<string, number>)
-        });
-      });
-    });
-
-    setRowData(rows);
-  }, [stores, skus, planningData]);
-
-  const onCellValueChanged = useCallback((params: any) => {
-    const { data, colDef, newValue } = params;
-    const { store, sku } = data;
-    const week = colDef.field.replace("_units", ""); 
-
-    if (!week || isNaN(parseFloat(newValue))) return;
-
-    const updatedValue = parseFloat(newValue);
-
-    setRowData((prevData) =>
-      prevData.map((row) =>
-        row.id === data.id ? { ...row, [`${week}_units`]: updatedValue } : row
-      )
-    );
-
-    dispatch(setSalesUnits({ storeId: store.id, skuId: sku.id, week, units: updatedValue }));
-  }, [dispatch]);
-
-  const columnDefs: any = useMemo(() => {
-    
-    const baseCols = [
-      {
-        headerName: "Store",
-        valueGetter: (params: any) => params.data.store.name,
-        pinned: "left",
-        width: 200,
-        editable: false,
-      },
-      {
-        headerName: "SKU",
-        valueGetter: (params: any) => params.data.sku.name,
-        pinned: "left",
-        width: 200,
-        editable: false,
-      },
-    ];
-
-    const weekCols = WEEKS.map((week) => {
-      return [
-        {
-          headerName: `${week} Sales Units`,
-          field: `${week}_units`,
-          editable: true,
-          width: 120,
-        },
-        {
-          headerName: `${week} Sales Dollars`,
-          field: `${week}_salesDollars`,
-          width: 130,
-          valueGetter: (params: any) => {
-            const { sku } = params.data;
-            return params.data[`${week}_units`] * sku.price;
-          },
-          valueFormatter: (params: any) => `$ ${params.value?.toFixed(2) || "0.00"}`,
-        },
-      ];
-    });
-
-    return [...baseCols, ...weekCols.flat()];
-  }, [WEEKS]);
-
-  const defaultColDef = useMemo(() => ({
-    editable: true,
-    resizable: true,
-  }), []);
-console.log("rowData",{rowData},
-  "columnDefs",{columnDefs},
-  "defaultColDef",{defaultColDef});
+const PlanningPage = () => {
   return (
-    <div style={{ width: "100%", height: "80vh" }}>
-      <h2>Planning</h2>
-      <div className="ag-theme-alpine" style={{ width: "100%", height: "100%" }}>
-        <AgGridReact
-          rowData={rowData}
-          columnDefs={columnDefs}
-          defaultColDef={defaultColDef}
-          onCellValueChanged={onCellValueChanged}
-        />
-      </div>
+    <div>
+      <h2 style={{ textAlign: "center", margin: "16px 0" }}>Data Viewer App</h2>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>Store</StyledTableCell>
+              <StyledTableCell>SKU</StyledTableCell>
+              <StyledTableCell colSpan={4}>Week 01</StyledTableCell>
+              <StyledTableCell colSpan={4}>Week 02</StyledTableCell>
+            </TableRow>
+            <TableRow>
+              <StyledTableCell></StyledTableCell>
+              <StyledTableCell></StyledTableCell>
+              <StyledTableCell>Sales Units</StyledTableCell>
+              <StyledTableCell>Sales Dollars</StyledTableCell>
+              <StyledTableCell>GM Dollars</StyledTableCell>
+              <StyledTableCell>GM Percent</StyledTableCell>
+              <StyledTableCell>Sales Units</StyledTableCell>
+              <StyledTableCell>Sales Dollars</StyledTableCell>
+              <StyledTableCell>GM Dollars</StyledTableCell>
+              <StyledTableCell>GM Percent</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.map((row, index) => (
+              <TableRow key={index}>
+                <TableCell>{row.store}</TableCell>
+                <TableCell>{row.sku}</TableCell>
+                <TableCell>{row.week1.salesUnits}</TableCell>
+                <TableCell>${row.week1.salesDollars.toLocaleString()}</TableCell>
+                <TableCell>${row.week1.gmDollars.toLocaleString()}</TableCell>
+                <TableCell style={{ backgroundColor: getColor(row.week1.gmPercent) }}>
+                  {row.week1.gmPercent}%
+                </TableCell>
+                <TableCell>{row.week2.salesUnits}</TableCell>
+                <TableCell>${row.week2.salesDollars.toLocaleString()}</TableCell>
+                <TableCell>${row.week2.gmDollars.toLocaleString()}</TableCell>
+                <TableCell style={{ backgroundColor: getColor(row.week2.gmPercent) }}>
+                  {row.week2.gmPercent}%
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   );
 };
