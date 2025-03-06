@@ -2,7 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ChartPage from './components/ChartPage';
 import NavBar from './components/NavBar';
-import PlanningPage from './components/PlanningPage';
+import PlanningPage from './pages/PlanningPage';
 import SideMenu from './components/SideMenu';
 import SKUsPage from './pages/SKUsPage';
 import StoresPage from './pages/StoresPage';
