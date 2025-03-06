@@ -63,7 +63,7 @@ const DarkChart: React.FC = () => {
           value={selectedStore}
           onChange={(e) => setSelectedStore(e.target.value)}
         >
-          <option>San Francisco Bay Trends</option>
+          <option>San Francisco Bay Trend</option>
           <option>Atlanta Outfitters</option>
           <option>Chicago Charm Boutique</option>
         </select>
