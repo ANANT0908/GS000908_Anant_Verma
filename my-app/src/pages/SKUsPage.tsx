@@ -29,6 +29,8 @@ const initialSKUs: SKU[] = [
   { id: 1, name: "Product A", price: 100, cost: 70 },
   { id: 2, name: "Product B", price: 150, cost: 90 },
   { id: 3, name: "Product C", price: 200, cost: 120 },
+  { id: 4, name: "Product D", price: 300, cost: 120 },
+  { id: 5, name: "Product E", price: 400, cost: 120 },
 ];
 
 export default function SKUsPage() {
