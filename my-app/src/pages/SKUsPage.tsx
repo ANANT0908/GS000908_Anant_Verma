@@ -1,104 +1,139 @@
-import React, { useState } from 'react';
-import { addSKU, updateSKU, deleteSKU } from '../store/slices/skuSlice';
-import { useAppDispatch, useAppSelector } from '../utils/hooks';
+import React, { useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  Box,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+} from "@mui/material";
+import { Delete } from "@mui/icons-material";
 
-const SKUsPage: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const skus = useAppSelector((state:any) => state.skus.skus);
+interface SKU {
+  id: number;
+  name: string;
+  price: number;
+  cost: number;
+}
 
-  const [newSKUName, setNewSKUName] = useState('');
-  const [newSKUPrice, setNewSKUPrice] = useState('0');
-  const [newSKUCost, setNewSKUCost] = useState('0');
+const initialSKUs: SKU[] = [
+  { id: 1, name: "Product A", price: 100, cost: 70 },
+  { id: 2, name: "Product B", price: 150, cost: 90 },
+  { id: 3, name: "Product C", price: 200, cost: 120 },
+];
 
-  const handleAddSKU = () => {
-    if (!newSKUName.trim()) return;
-    dispatch(
-      addSKU({
-        name: newSKUName.trim(),
-        price: parseFloat(newSKUPrice) || 0,
-        cost: parseFloat(newSKUCost) || 0,
-      })
-    );
-    setNewSKUName('');
-    setNewSKUPrice('0');
-    setNewSKUCost('0');
+export default function SKUsPage() {
+  const [skus, setSKUs] = useState<SKU[]>(initialSKUs);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [newSKU, setNewSKU] = useState({ name: "", price: "", cost: "" });
+
+  const handleDelete = (id: number) => {
+    setSKUs((prev) => prev.filter((sku) => sku.id !== id));
   };
 
-  const handleUpdateSKU = (id: number, field: string, value: string) => {
-    const sku = skus.find((s:any) => s.id === id);
-    if (sku) {
-      dispatch({
-        type: updateSKU.type,
-        payload: { ...sku, [field]: parseFloat(value) || value },
-      });
-    }
+
+
+  const handleOpenDialog = () => setDialogOpen(true);
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setNewSKU({ name: "", price: "", cost: "" });
+  };
+
+  const handleAddSKU = () => {
+    if (!newSKU.name.trim()) return;
+    const newId = skus.length > 0 ? Math.max(...skus.map((s) => s.id)) + 1 : 1;
+    const sku: SKU = {
+      id: newId,
+      name: newSKU.name.trim(),
+      price: parseFloat(newSKU.price) || 0,
+      cost: parseFloat(newSKU.cost) || 0,
+    };
+    setSKUs([...skus, sku]);
+    handleCloseDialog();
   };
 
   return (
-    <div>
-      <h2>SKUs</h2>
-      <table className="sku-table">
-        <thead>
-          <tr>
-            <th></th>
-            <th>SKU</th>
-            <th>Price</th>
-            <th>Cost</th>
-          </tr>
-        </thead>
-        <tbody>
-          {skus.map((sku:any) => (
-            <tr key={sku.id}>
-              <td>
-                <button onClick={() => dispatch(deleteSKU(sku.id))}>🗑️</button>
-              </td>
-              <td>{sku.name}</td>
-              <td>
-                <input
-                  type="number"
-                  value={sku.price}
-                  onChange={(e) =>
-                    handleUpdateSKU(sku.id, 'price', e.target.value)
-                  }
-                />
-              </td>
-              <td>
-                <input
-                  type="number"
-                  value={sku.cost}
-                  onChange={(e) =>
-                    handleUpdateSKU(sku.id, 'cost', e.target.value)
-                  }
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <Box sx={{ position: "relative", p: 2 }}>
+      <h2 style={{ margin: "16px 0" }}>SKU Management</h2>
 
-      <div style={{ marginTop: 16 }}>
-        <h3>New SKU</h3>
-        <input
-          placeholder="SKU Name"
-          value={newSKUName}
-          onChange={(e) => setNewSKUName(e.target.value)}
-        />
-        <input
-          placeholder="Price"
-          type="number"
-          value={newSKUPrice}
-          onChange={(e) => setNewSKUPrice(e.target.value)}
-        />
-        <input
-          placeholder="Cost"
-          type="number"
-          value={newSKUCost}
-          onChange={(e) => setNewSKUCost(e.target.value)}
-        />
-        <button onClick={handleAddSKU}>Add SKU</button>
-      </div>
-    </div>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow sx={{ backgroundColor: "#f5f7f8" }}>
+              <TableCell sx={{ width: 50 }}>Delete</TableCell>
+              <TableCell>SKU</TableCell>
+              <TableCell>Price</TableCell>
+              <TableCell>Cost</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {skus.map((sku, index) => (
+              <TableRow key={sku.id}>
+                <TableCell>
+                  <IconButton size="small" onClick={() => handleDelete(sku.id)}>
+                    <Delete />
+                  </IconButton>
+                </TableCell>
+                <TableCell>{sku.name}</TableCell>
+                <TableCell>{sku.price}</TableCell>
+                <TableCell>{sku.cost}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <Button
+        variant="contained"
+        onClick={handleOpenDialog}
+        sx={{
+          position: "fixed",
+          bottom: 24,
+          left: 240,
+          backgroundColor: "#f3905f",
+          ":hover": { backgroundColor: "#f16529" },
+        }}
+      >
+        ADD SKU
+      </Button>
+
+      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+        <DialogTitle>Add New SKU</DialogTitle>
+        <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <TextField
+            placeholder="SKU Name"
+            value={newSKU.name}
+            onChange={(e) => setNewSKU({ ...newSKU, name: e.target.value })}
+          />
+          <TextField
+            placeholder="Price"
+            type="number"
+            value={newSKU.price}
+            onChange={(e) => setNewSKU({ ...newSKU, price: e.target.value })}
+          />
+          <TextField
+            placeholder="Cost"
+            type="number"
+            value={newSKU.cost}
+            onChange={(e) => setNewSKU({ ...newSKU, cost: e.target.value })}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button variant="contained" onClick={handleAddSKU}>
+            Add
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
-};
-
-export default SKUsPage;
+}
