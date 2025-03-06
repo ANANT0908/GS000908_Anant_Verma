@@ -127,6 +127,7 @@ const PlanningPage: React.FC = () => {
           columnDefs={columnDefs} 
           defaultColDef={{ resizable: true }} 
           rowModelType="clientSide" 
+          getRowHeight={() => 50}
         />
       </div>
     </div>
