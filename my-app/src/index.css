@@ -74,7 +74,7 @@ body {
 
 .side-menu {
   width: 220px;
-  background: #2c3e50;
+  background: lightgray;
   padding: 1rem 0;
   display: flex;
   flex-direction: column;
@@ -82,6 +82,9 @@ body {
 
 .side-menu nav ul {
   list-style: none;
+}
+.side-menu span {
+  color: black;
 }
 
 .side-menu nav li {
@@ -98,7 +101,7 @@ body {
 
 .side-menu nav a:hover,
 .side-menu nav a.active {
-  background-color: #34495e;
+  background-color: #b6b6b6;
 }
 
 .page-content {
