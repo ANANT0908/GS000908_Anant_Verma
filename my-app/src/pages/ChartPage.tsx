@@ -59,11 +59,11 @@ const DarkChart: React.FC = () => {
       <div style={{ marginBottom: 16 }}>
         <label style={{ color: "#fff", marginRight: 8 }}>Store:</label>
         <select
-          style={{ padding: 6 }}
+          style={{ padding: 5 }}
           value={selectedStore}
           onChange={(e) => setSelectedStore(e.target.value)}
         >
-          <option>San Francisco Bay Trend</option>
+          <option>San Francisco Bay Trends</option>
           <option>Atlanta Outfitters</option>
           <option>Chicago Charm Boutique</option>
         </select>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import ChartPage from './components/ChartPage';
+import ChartPage from './pages/ChartPage';
 import NavBar from './components/NavBar';
 import PlanningPage from './pages/PlanningPage';
 import SideMenu from './components/SideMenu';
