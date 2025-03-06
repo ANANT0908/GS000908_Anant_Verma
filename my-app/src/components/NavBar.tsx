@@ -1,5 +1,7 @@
 import React from 'react';
 import logo from "../assets/GsynergyLogo.svg"
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+
 const NavBar: React.FC = () => {
   return (
     <header className="navbar">
@@ -12,7 +14,7 @@ const NavBar: React.FC = () => {
       </div>
         <h1>Data Viewer App</h1>
       <div className="auth-section">
-        <button>Sign In</button>
+        <AccountCircleIcon/>
       </div>
     </header>
   );
