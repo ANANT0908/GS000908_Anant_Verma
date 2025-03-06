@@ -66,27 +66,35 @@ export default function SKUsPage() {
         ),
         sortable: false,
         filter: false,
-        cellStyle: { textAlign: "center", height:"100px" },
+        cellStyle: { textAlign: "center", height: "100px" },
       },
       {
         field: "name",
-        headerName: "SKU Name",
+        headerName: "SKU",
         flex: 1,
-        cellStyle: { paddingLeft: "12px", fontWeight: "500" ,height:"100px" },
+        cellStyle: { paddingLeft: "12px", fontWeight: "500", height: "100px" },
       },
       {
         field: "price",
-        headerName: "Price ($)",
+        headerName: "Price",
         flex: 1,
         valueFormatter: (params: any): string => `$ ${params.value.toFixed(2)}`,
-        cellStyle: { textAlign: "right", paddingRight: "10px",height:"100px"  },
+        cellStyle: {
+          textAlign: "right",
+          paddingRight: "10px",
+          height: "100px",
+        },
       },
       {
         field: "cost",
-        headerName: "Cost ($)",
+        headerName: "Cost",
         flex: 1,
         valueFormatter: (params: any): string => `$ ${params.value.toFixed(2)}`,
-        cellStyle: { textAlign: "right", paddingRight: "10px",height:"100px"  },
+        cellStyle: {
+          textAlign: "right",
+          paddingRight: "10px",
+          height: "100px",
+        },
       },
     ],
     [skus]
@@ -100,6 +108,18 @@ export default function SKUsPage() {
           columnDefs={columnDefs}
           defaultColDef={{ resizable: true, sortable: true, filter: true }}
           rowHeight={55}
+          headerHeight={60} 
+          gridOptions={{
+            domLayout: "autoHeight",
+            suppressRowClickSelection: true,
+            suppressCellFocus: true,
+            suppressDragLeaveHidesColumns: true,
+            popupParent: document.body,
+            autoSizeStrategy: {
+              type: "fitGridWidth",
+            },
+          }}
+          className="custom-ag-grid"
         />
       </div>
 
@@ -139,7 +159,6 @@ export default function SKUsPage() {
             flexDirection: "column",
             gap: 2,
             p: 3,
-            
           }}
         >
           <TextField
