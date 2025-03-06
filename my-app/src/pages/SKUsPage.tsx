@@ -94,7 +94,7 @@ export default function SKUsPage() {
 
   return (
     <>
-      <div className="ag-theme-alpine" style={{ height: 450, width: "100%" }}>
+      <div className="ag-theme-alpine" style={{ height: 530, width: "100%" }}>
         <AgGridReact
           rowData={skus}
           columnDefs={columnDefs}
