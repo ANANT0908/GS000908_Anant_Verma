@@ -1,183 +1,186 @@
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
-    background-color: #f5f5f5;
-    color: #333;
-  }
-  
-  .app-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-  }
-  
-  
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #ffffff;
-    padding: 0.75rem 1.5rem;
-    border-bottom: 1px solid #ddd;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  }
-  
-  .navbar .logo-section {
-    display: flex;
-    align-items: center;
-  }
-  
-  .navbar .logo-section img {
-    margin-right: 12px;
-  }
-  
-  .navbar h1 {
-    font-size: 1.5rem;
-    font-weight: 600;
-  }
-  
-  .navbar .auth-section button {
-    background-color: #1976d2;
-    color: #fff;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .navbar .auth-section button:hover {
-    background-color: #115293;
-  }
-  
-  
-  .main-layout {
-    flex: 1;
-    display: flex;
-    overflow: hidden;
-  }
-  
-  
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  min-height: 60px;
+}
+
+.navbar .logo-section {
+  display: flex;
+  align-items: center;
+}
+
+.navbar .logo-section svg,
+.navbar .logo-section img {
+  height: 40px;
+  width: auto;
+  margin-right: 12px;
+}
+
+.navbar h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  flex-grow: 1;
+  text-align: center;
+}
+
+.navbar .auth-section {
+  display: flex;
+  align-items: center;
+}
+
+.navbar .auth-section button {
+  background-color: #1976d2;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.navbar .auth-section button:hover {
+  background-color: #115293;
+}
+
+.main-layout {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.side-menu {
+  width: 220px;
+  background: #2c3e50;
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.side-menu nav ul {
+  list-style: none;
+}
+
+.side-menu nav li {
+  margin: 0.5rem 0;
+}
+
+.side-menu nav a {
+  text-decoration: none;
+  color: #ecf0f1;
+  padding: 12px 20px;
+  display: block;
+  transition: background-color 0.2s ease;
+}
+
+.side-menu nav a:hover,
+.side-menu nav a.active {
+  background-color: #34495e;
+}
+
+.page-content {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  background-color: #ecf0f1;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  background: #fff;
+}
+
+table th,
+table td {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  width: 100%;
+  max-width: 200px;
+  transition: border-color 0.2s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+  outline: none;
+  border-color: #1976d2;
+}
+
+button {
+  background-color: #1976d2;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 0.9rem;
+}
+
+button:hover {
+  background-color: #115293;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.ag-theme-alpine {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.custom-ag-grid .ag-header {
+  background-color: #f0f0f0 !important;
+  font-weight: bold;
+}
+
+@media (max-width: 1080px) {
   .side-menu {
-    width: 220px;
-    background: #2c3e50;
-    padding: 1rem 0;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .side-menu nav ul {
-    list-style: none;
-  }
-  
-  .side-menu nav li {
-    margin: 0.5rem 0;
-  }
-  
-  .side-menu nav a {
-    text-decoration: none;
-    color: #ecf0f1;
-    padding: 12px 20px;
-    display: block;
-    transition: background-color 0.2s ease;
-  }
-  
-  .side-menu nav a:hover,
-  .side-menu nav a.active {
-    background-color: #34495e;
-  }
-  
-  
-  .page-content {
-    flex: 1;
-    padding: 1.5rem;
-    overflow-y: auto;
-    background-color: #ecf0f1;
-  }
-  
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1rem 0;
-    background: #fff;
-  }
-  
-  table th,
-  table td {
-    padding: 0.75rem 1rem;
-    border: 1px solid #ddd;
-    text-align: left;
-  }
-  
-  table th {
-    background-color: #f8f9fa;
-    font-weight: 600;
-  }
-  
-  
-  input[type="text"],
-  input[type="number"],
-  select {
-    padding: 6px 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    width: 100%;
-    max-width: 200px;
-    transition: border-color 0.2s ease;
-  }
-  
-  input[type="text"]:focus,
-  input[type="number"]:focus,
-  select:focus {
-    outline: none;
-    border-color: #1976d2;
-  }
-  
-  
-  button {
-    background-color: #1976d2;
-    color: #fff;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    font-size: 0.9rem;
-  }
-  
-  button:hover {
-    background-color: #115293;
-  }
-  
-  button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
-  
-
-  .ag-theme-alpine {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  
-  
-  @media (max-width: 1080px) {
-    .side-menu {
       width: 180px;
-    }
-    
-    .navbar h1 {
+  }
+
+  .navbar h1 {
       font-size: 1.3rem;
-    }
   }
-  .custom-ag-grid .ag-header {
-    background-color: #f0f0f0 !important;
-    font-weight: bold;
-  }
+}
