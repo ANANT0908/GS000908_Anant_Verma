@@ -66,27 +66,27 @@ export default function SKUsPage() {
         ),
         sortable: false,
         filter: false,
-        cellStyle: { textAlign: "center" },
+        cellStyle: { textAlign: "center", height:"100px" },
       },
       {
         field: "name",
         headerName: "SKU Name",
         flex: 1,
-        cellStyle: { paddingLeft: "12px", fontWeight: "500" },
+        cellStyle: { paddingLeft: "12px", fontWeight: "500" ,height:"100px" },
       },
       {
         field: "price",
         headerName: "Price ($)",
         flex: 1,
         valueFormatter: (params: any): string => `$ ${params.value.toFixed(2)}`,
-        cellStyle: { textAlign: "right", paddingRight: "10px" },
+        cellStyle: { textAlign: "right", paddingRight: "10px",height:"100px"  },
       },
       {
         field: "cost",
         headerName: "Cost ($)",
         flex: 1,
         valueFormatter: (params: any): string => `$ ${params.value.toFixed(2)}`,
-        cellStyle: { textAlign: "right", paddingRight: "10px" },
+        cellStyle: { textAlign: "right", paddingRight: "10px",height:"100px"  },
       },
     ],
     [skus]
@@ -139,31 +139,25 @@ export default function SKUsPage() {
             flexDirection: "column",
             gap: 2,
             p: 3,
-            minWidth: 350,
+            
           }}
         >
           <TextField
-            label="SKU Name"
+            placeholder="SKU Name"
             value={newSKU.name}
             onChange={(e) => setNewSKU({ ...newSKU, name: e.target.value })}
-            fullWidth
-            sx={{ backgroundColor: "#f9f9f9", borderRadius: 1 }}
           />
           <TextField
-            label="Price ($)"
+            placeholder="Price ($)"
             type="number"
             value={newSKU.price}
             onChange={(e) => setNewSKU({ ...newSKU, price: e.target.value })}
-            fullWidth
-            sx={{ backgroundColor: "#f9f9f9", borderRadius: 1 }}
           />
           <TextField
-            label="Cost ($)"
+            placeholder="Cost ($)"
             type="number"
             value={newSKU.cost}
             onChange={(e) => setNewSKU({ ...newSKU, cost: e.target.value })}
-            fullWidth
-            sx={{ backgroundColor: "#f9f9f9", borderRadius: 1 }}
           />
         </DialogContent>
         <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
